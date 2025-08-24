@@ -94,12 +94,12 @@ You use the `ln` command with the `-s` flag. The syntax is:
 ln -s [target_file] [link_name]
 ```
 
-**Example:**
+**Example 1: Move and Sync**
 To manage your `~/.bashrc` file, you would:
 
 1.  **Move the original file:**
     ```bash
-    mv ~/.bashrc ~/dotfiles/.bashrc # or && mv *.sh ~/dotfiles/ && mv *.env ~/dotfiles/
+    mv ~/.bashrc ~/dotfiles/.bashrc && mv *.env ~/dotfiles/ && mv ~/.secrets ~/dotfiles/.secrets && mv *.bash ~/shell/ && mv *.sh ~/shell/
     ```
 2.  **Create the symbolic link:**
     ```bash
