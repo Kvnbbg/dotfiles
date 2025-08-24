@@ -1,47 +1,118 @@
 # My Dotfiles
 
-A collection of my personalized configurations and scripts to set up a new development environment.
+A collection of my personalized configurations and an **omnibus** script to manage everything. This repository is my single source of truth for a consistent and efficient development environment.
+
+-----
 
 ### ⚙️ What's Included
-- **Bash & Zsh:** Custom aliases, functions, and a tailored shell experience.
-- **Git:** My global `.gitconfig` settings for user info, aliases, and more.
-- **Tmux:** My `tmux.conf` for a consistent, multi-pane terminal setup.
-- **Custom Scripts:** Utility scripts to automate tasks and keep everything in sync.
 
----
+  - **Shells:** Custom `.bashrc` and `.zshrc` for Bash and Zsh.
+  - **Git:** My global `.gitconfig` file with useful aliases and settings.
+  - **Tmux:** My `.tmux.conf` for a consistent, multi-pane terminal setup.
+  - **`dotctl`:** A custom script to manage the installation and updates of all dotfiles.
 
-### ⚠️ Note on VS Code
-
-My VS Code settings are not included in this repository. Visual Studio Code has a built-in **Settings Sync** feature that is the recommended way to keep your editor preferences, extensions, and keybindings synchronized across multiple machines.
-
-To use it, simply sign in with your GitHub or Microsoft account within VS Code.
-
----
+-----
 
 ### 🚀 Usage
 
 My `dotctl` script is designed to make setup and maintenance easy.
 
-**Install:** Quickly set up all dotfiles on a new machine. This command symlinks the files from this repository to your home directory.
+**Install:** Quickly set up all dotfiles on a new machine. This command creates symbolic links from this repository to your home directory.
 
 ```bash
 dotctl install
 ```
 
-Update: Pull the latest changes from the remote repository and apply them. This is useful for keeping your dev environment synchronized across multiple machines.
+**Update:** Pull the latest changes from the remote repository and apply them. This is useful for keeping your dev environment synchronized across multiple machines.
 
 ```bash
 dotctl update
 ```
-Update: Pull the latest changes from the remote repository and apply them. This is useful for keeping your dev environment synchronized across multiple machines.
+
+**Diff:** View and manage differences between your local dotfiles and the repository.
 
 ```bash
 dotctl diff
 ```
 
-### dotctl Script Structure (Conceptual)
+-----
 
-Your dotctl script will likely be a simple bash script that uses a case statement to handle different subcommands.
+### ⚠️ A Note on Sensitive Files
+
+You should **never** store sensitive information like API keys, passwords, or machine-specific data in a public Git repository. To manage these files, we use a combination of a dedicated secrets file and `.gitignore`.
+
+#### 1\. The Secrets File
+
+Instead of putting secrets directly in your dotfiles, store them in a separate, unversioned file like `.secrets` or `.env`. Then, `source` that file from your main shell configuration.
+
+**In your `~/.bashrc` file:**
+
+```bash
+# Load my private environment variables
+source ~/.secrets
+```
+
+**In your `~/.secrets` file (which is NOT in Git):**
+
+```
+export API_KEY="your_private_api_key_here"
+export DATABASE_PASSWORD="your_secret_password"
+```
+
+This way, your shell can access the secrets, but they are not exposed in your public repository.
+
+#### 2\. The `.gitignore` File
+
+The `.gitignore` file is essential for telling Git which files to ignore and not upload to your repository. This is how you keep your secrets safe.
+
+**Add these lines to your `~/dotfiles/.gitignore` file:**
+
+```
+# Exclude sensitive files from the repository
+.secrets
+.env
+.profile
+```
+
+This ensures that your private files remain on your local machine and are never accidentally committed.
+
+-----
+
+### How to Manage Your Dotfiles with Git
+
+Managing dotfiles with Git requires using **symbolic links** (or symlinks), which act as pointers from the old file location to the new one inside your repository.
+
+#### What is a Symbolic Link?
+
+A symbolic link is a special file that points to another file or directory. When your system tries to access the symlink, it is automatically redirected to the target file. It's like a desktop shortcut.
+
+#### How to Create a Symbolic Link
+
+You use the `ln` command with the `-s` flag. The syntax is:
+
+```bash
+ln -s [target_file] [link_name]
+```
+
+**Example:**
+To manage your `~/.bashrc` file, you would:
+
+1.  **Move the original file:**
+    ```bash
+    mv ~/.bashrc ~/dotfiles/.bashrc # or && mv *.sh ~/dotfiles/ && mv *.env ~/dotfiles/
+    ```
+2.  **Create the symbolic link:**
+    ```bash
+    ln -s ~/dotfiles/.bashrc ~/.bashrc
+    ```
+
+This allows your system to find `.bashrc` where it expects to, while the actual file is safely managed inside your Git repository.
+
+-----
+
+### `dotctl` Script Structure (Conceptual)
+
+Your `dotctl` script is a simple Bash script that uses a `case` statement to handle different subcommands.
 
 ```bash
 #!/usr/bin/env bash
@@ -67,10 +138,6 @@ case "$1" in
         echo "Updating..."
         # Pull latest changes from Git
         git pull origin main
-        # Add any other update commands here, e.g., for Zsh plugins
-        # Example: if you use a Zsh plugin manager like zplug or zgen, you would add the update command here.
-        # zgen update
-        # zplug update
 
         echo "Update complete."
         ;;
