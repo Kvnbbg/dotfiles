@@ -99,7 +99,7 @@ To manage your `~/.bashrc` file, you would:
 
 1.  **Move the original file:**
     ```bash
-    mv ~/.bashrc ~/dotfiles/.bashrc && mv *.env ~/dotfiles/ && mv ~/.secrets ~/dotfiles/.secrets && mv *.bash ~/.shell/ && mv *.sh ~/.shell/
+    mv ~/.bashrc ~/dotfiles/.bashrc && mv *.env ~/dotfiles/ && mv ~/.secrets ~/dotfiles/.secrets && mv *.sh ~/.shell/
     ```
 2.  **Create the symbolic link:**
     ```bash
