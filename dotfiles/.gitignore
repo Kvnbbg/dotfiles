@@ -1,0 +1,4 @@
+# In ~/.dotfiles/.gitignore
+.secrets
+.env
+.profile
